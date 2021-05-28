@@ -1,29 +1,42 @@
-const jwt = require('jsonwebtoken');
-var User = require('sequelize').import('../models/user');
+const jwt = require("jsonwebtoken");
+const { UserModel } = require("../models/user");
 
-module.exports = function (req, res, next) {
-    if (req.method == 'OPTIONS') {
-        next();   // allowing options as a method for request
-    } else {
-        var sessionToken = req.headers.authorization;
-        console.log(sessionToken);
-        if (!sessionToken) return res.status(403).send({ auth: false, message: "No token provided." });
-        else {
-            jwt.verify(sessionToken, 'lets_play_sum_games_man', (err, decoded) => {
-                if (decoded) {
-                    User.findOne({ where: { id: decoded.id } }).then(user => {
-                        req.user = user;
-                        console.log(`user: ${user}`)
-                        next()
-                    },
-                        function () {
-                            res.status(401).send({ error: "not authorized" });
-                        })
+const validateJWT = async (req, res, next) => {
+    if (req.method == "OPTIONS") {
+        next(); 
+    } else if (
+        req.headers.authorization &&
+        req.headers.authorization.includes("Bearer")
+    ) {
+        const { authorization } = req.headers;
 
-                } else {
-                    res.status(400).send({ error: "not authorized" })
-                }
-            });
+        const payload = authorization
+          ? jwt.verify(
+              authorization.includes("Bearer")
+                ? authorization.split(" ")[1]
+                : authorization,
+              "process.env.JWT_SECRET"
+            )
+          : undefined;
+
+
+        if (payload) {
+            let foundUser = await UserModel.findOne({ where: { id: payload.id } });
+            
+            if (foundUser) {
+
+                req.user = foundUser;
+                
+                next();
+            } else {
+                res.status(400).send({ message: "Not Authorized" });
+            }
+        } else {
+            res.status(401).send({ message: "Invalid token" });
         }
+    } else {
+        res.status(403).send({ message: "Forbidden" });
     }
-}
+};
+
+module.exports = validateJWT;

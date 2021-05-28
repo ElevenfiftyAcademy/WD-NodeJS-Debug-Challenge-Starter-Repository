@@ -1,16 +1,3 @@
-const Sequelize = require('sequelize');
+const {Sequelize} = require('sequelize');
 
-const sequelize = new Sequelize('gamedb', 'postgres', 'ghastb0i', {
-    host: 'localhost',
-    dialect: 'postgres'
-})
-
-sequelize.authenticate().then(
-    function success() {
-        console.log("Connected to DB");
-    },
-
-    function fail(err) {
-        console.log(`Error: ${err}`);
-    }
-)
+const db = new Sequelize("postgres://postgres:YOURPASSWORDHERE@localhost:5432/gamedb");
