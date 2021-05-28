@@ -49,6 +49,10 @@ router.post('/create', async (req, res) => {
             have_played,
             owner_id: req.body.user.id
         })
+        res.status(201).json({
+            message: "Game created"
+        })
+
     } catch (error) {
         res.status(500).json({
             message: `Game not created: ${error}`
@@ -93,7 +97,7 @@ router.delete('/remove/:id', async (req, res) => {
         const query = {
             where: {
                 id: gameId,
-                owner: ownerId
+                owner_id: ownerId
             }
         };
 

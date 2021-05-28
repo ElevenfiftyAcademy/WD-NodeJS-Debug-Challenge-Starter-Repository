@@ -1,8 +1,16 @@
 {
   "name": "debug-challenge",
   "version": "1.0.0",
+  "description": "Student practice repository on using Sequelize, Express, Node, JSONWebtoken, and BcryptJS",
   "main": "app.js",
-  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon"
+  },
+  "keywords": [],
+  "author": "Eleven Fifty Academy",
+  "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
